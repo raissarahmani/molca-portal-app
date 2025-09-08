@@ -13,10 +13,14 @@
     padding: 0;
     background-color: var(--color-base);
     color: var(--color-text);
+    font-family: var(--font-poppins);
   }
 }
 
 @layer components {
+  .title {
+    font-family: var(--font-roboto);
+  }
   .label-form {
     @apply text-sm text-[var(--color-text)] my-1
   }
