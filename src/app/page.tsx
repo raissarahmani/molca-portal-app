@@ -1,21 +1,16 @@
 "use client"
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import Header from "./components/header";
 
 export default function HomePage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {isSignedIn} = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("access_token")
-    setIsLoggedIn(!!token)
-  }, [])
-
   const handleLogin = () => {
-    if (isLoggedIn) {
+    if (isSignedIn) {
       router.push("/home");
     } else {
       router.push("/login");

@@ -1,7 +1,10 @@
+import { type Metadata } from 'next'
+import { Poppins, Roboto } from "next/font/google";
+import {
+  ClerkProvider
+} from '@clerk/nextjs'
 import "@/styles/globals.css";
 
-import { type Metadata } from "next";
-import { Poppins, Roboto } from "next/font/google";
 
 export const metadata: Metadata = {
   title: "Portal - Molca",
@@ -18,15 +21,21 @@ const poppins = Poppins({
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
+  variable: "--font-roboto",
 });
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
-    <html lang="en" className={`${poppins.variable} ${roboto.variable}`}>
-      <body>{children}</body>
-    </html>
-  );
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${poppins.variable} ${roboto.variable} antialiased`}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
+  )
 }
