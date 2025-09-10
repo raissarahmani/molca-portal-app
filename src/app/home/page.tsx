@@ -31,22 +31,6 @@ export default function Menu() {
   const [totalPages, setTotalPages] = useState(1);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const mockData: Record<number, Project[]> = {
-    1: [
-      { _id: "1", title: "Project A", slug: "project-a", link: "#", image_url: "/image.png", type: "smart manufacturing" },
-      { _id: "2", title: "Project B", slug: "project-b", link: "#", image_url: "/image.png", type: "digital twin" },
-      { _id: "3", title: "Project C", slug: "project-c", link: "#", image_url: "/image.png", type: "ar" },
-      { _id: "4", title: "Project D", slug: "project-d", link: "#", image_url: "/image.png", type: "vr" },
-      { _id: "5", title: "Project E", slug: "project-e", link: "#", image_url: "/image.png", type: "tools" },
-      { _id: "6", title: "Project F", slug: "project-f", link: "#", image_url: "/image.png", type: "deck" },
-    ],
-    2: [
-      { _id: "7", title: "Project G", slug: "project-g", link: "#", image_url: "/image.png", type: "smart manufacturing" },
-      { _id: "8", title: "Project H", slug: "project-h", link: "#", image_url: "/image.png", type: "digital twin" },
-      { _id: "9", title: "Project I", slug: "project-i", link: "#", image_url: "/image.png", type: "ar" },
-    ],
-  };
-
   const fetchProjects = async () => {
     try {
       let res: Response;
@@ -78,8 +62,6 @@ export default function Menu() {
       }
     } catch (err) {
       console.error("Error fetching projects:", err);
-      setProjects(mockData[page] ?? []);
-      setTotalPages(Object.keys(mockData).length);
     }
   }
 
@@ -123,12 +105,13 @@ export default function Menu() {
 
           <div className="flex flex-row gap-2 items-center justify-center">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-              <Pagination
-                key={num}
-                page={String(num)}
-                active={num === page}
-                onClick={() => setPage(num)}
-              />
+              <div key={num} className='bg-[var(--color-primary)] text-[var(--color-base)] hover:bg-[var(--color-primary)] hover:text-[var(--color-base)] rounded-md'>
+                <Pagination
+                  page={String(num)}
+                  active={num === page}
+                  onClick={() => setPage(num)}
+                />
+              </div>
             ))}
           </div>
         </div>
