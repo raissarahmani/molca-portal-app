@@ -16,12 +16,7 @@ type Project = {
   link: string;
   image_url: string;
   type: string;
-};
-
-type PaginatedProjects = {
-  items: Project[];
-  total_pages: number;
-  total_items: number;
+  last_updated_at: string;
 };
 
 export default function Menu() {
@@ -29,6 +24,7 @@ export default function Menu() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const limit = 8;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const fetchProjects = async () => {
@@ -44,22 +40,23 @@ export default function Menu() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: "8",
+          limit: limit.toString(),
         });
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
 
       if (!res.ok) throw new Error("Failed to fetch projects");
 
-      const data = (await res.json()) as PaginatedProjects | Project;
+      const result = await res.json() as {
+        code: string;
+        status: number;
+        message: string;
+        data: Project[];
+      };
 
-      if ("items" in data) {
-        setProjects(data.items ?? []);
-        setTotalPages(data.total_pages ?? 1);
-      } else {
-        setProjects([data]);
-        setTotalPages(1);
-      }
+      setProjects(result.data ?? []);
+      setTotalPages(Math.ceil((result.data?.length ?? 0) / limit))
+      console.log(result.data)
     } catch (err) {
       console.error("Error fetching projects:", err);
     }

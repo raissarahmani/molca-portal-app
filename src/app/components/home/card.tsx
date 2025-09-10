@@ -5,14 +5,15 @@ type CardProps = {
   title: string;
 }
 
-export default function card({ image, title }: CardProps) {
+export default function card({ title }: CardProps) {
   return (
-    <div className='relative w-[250px] h-[300px] cursor-pointer hover:scale-105 hover:duration-200'>
+    <div className='flex flex-col items-center justify-center bg-[var(--color-text)] rounded-lg relative w-[250px] h-[300px] cursor-pointer hover:scale-105 hover:duration-200'>
       <Image
-        src={image}
-        alt={title}
-        fill
-        className="object-cover z-0 rounded-lg"
+        src="/noimage.png"
+        alt="No image"
+        width={50}
+        height={50}
+        className="object-contain z-0"
       />
       <div className="z-10 absolute bottom-0 inset-x-0 bg-[#00000099] px-5 py-3">
         <div className="font-semibold text-sm text-[var(--color-primary)]">{title}</div>
