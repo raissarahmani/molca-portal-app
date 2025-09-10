@@ -25,7 +25,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isOpen, setIsOpen] = useState(false)
+  const [newProject, setNewProject] = useState(false)
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const options = [
@@ -38,16 +38,16 @@ export default function Dashboard() {
     {name: "Tools", value: "tool"},
   ]
   const [type, setType] = useState(options[0]?.value ?? "")
-  const limit = 8
+  const limit = 10
 
   const projectData = [
     { name: "Image", width: "w-30"},
     { name: "Project Name", width: "w-50"},
     { name: "Type", width: "w-30"},
-    { name: "Slug", width: "w-20"},
-    { name: "Link", width: "w-50"},
+    { name: "Slug", width: "w-30"},
+    { name: "Link", width: "w-30"},
     { name: "Last Update", width: "w-30"},
-    { name: "Action", width: "w-20"},
+    { name: "Action", width: "w-30"},
   ]
 
   const handleProjectCreated = (project: Project) => {
@@ -131,7 +131,7 @@ export default function Dashboard() {
                   </div>
               </div>
               <button 
-                onClick={() => setIsOpen(true)} 
+                onClick={() => setNewProject(true)} 
                 className='button m-0 py-0 px-3 bg-[var(--color-red)] border-[var(--color-red)] flex flex-row gap-2 items-center justify-center'>
                   <p className='font-semibold'>+</p>
                   <p className='text-xs font-semibold'>Add project</p>
@@ -171,12 +171,12 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className={`fixed inset-0 z-50 bg-[#00000099] ${isOpen ? "opacity-100" : "opacity-0"} pointer-events-none`}>
+        <div className={`fixed inset-0 z-50 bg-[#00000099] ${newProject ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
           <div className={`fixed top-0 right-0 h-full w-1/3 transition-all duration-500 ease-in-out bg-[#00000099] shadow-lg overflow-y-auto
-              ${isOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"}`}
+              ${newProject ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"}`}
           >
             <New 
-              setIsOpen={setIsOpen} 
+              setNewProject={setNewProject} 
               onProjectCreated={handleProjectCreated} 
               options={options}
             />
