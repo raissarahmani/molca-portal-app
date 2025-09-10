@@ -17,13 +17,7 @@ type Project = {
   link: string;
   image_url: string;
   type: string;
-  updated_at: string;
-};
-
-type PaginatedProjects = {
-  items: Project[];
-  total_pages: number;
-  total_items: number;
+  last_updated_at: string;
 };
 
 export default function Dashboard() {
@@ -41,16 +35,17 @@ export default function Dashboard() {
     {name: "AR", value: "ar"},
     {name: "Smart Manufacturing", value: "smart-manufacture"},
     {name: "Deck", value: "deck"},
-    {name: "Tools", value: "tools"},
+    {name: "Tools", value: "tool"},
   ]
   const [type, setType] = useState(options[0]?.value ?? "")
+  const limit = 8
 
   const projectData = [
     { name: "Image", width: "w-30"},
     { name: "Project Name", width: "w-50"},
     { name: "Type", width: "w-30"},
     { name: "Slug", width: "w-20"},
-    { name: "Link", width: "w-40"},
+    { name: "Link", width: "w-50"},
     { name: "Last Update", width: "w-30"},
     { name: "Action", width: "w-20"},
   ]
@@ -72,22 +67,23 @@ export default function Dashboard() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: "8",
+          limit: limit.toString(),
         });
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
 
       if (!res.ok) throw new Error("Failed to fetch projects");
 
-      const data = (await res.json()) as PaginatedProjects | Project;
+      const result = await res.json() as {
+        code: string;
+        status: number;
+        message: string;
+        data: Project[];
+      };
 
-      if ("items" in data) {
-        setProjects(data.items ?? []);
-        setTotalPages(data.total_pages ?? 1);
-      } else {
-        setProjects([data]);
-        setTotalPages(1);
-      }
+      setProjects(result.data ?? []);
+      setTotalPages(Math.ceil((result.data?.length ?? 0) / limit))
+      console.log(result.data)
     } catch (err) {
       console.error("Error fetching projects:", err);
     }
@@ -102,8 +98,8 @@ export default function Dashboard() {
       <SignedIn>
         <Header />
         <div className='flex flex-row'>
-          <div className='w-1/4'></div>
-          <div className='flex flex-col gap-3 w-3/4 px-10'>
+          <div className='w-1/5'></div>
+          <div className='flex flex-col gap-3 w-4/5 px-10'>
             <div className='flex flex-row justify-between w-full my-5'>
               <div className='flex flex-row gap-3 items-center px-2'>
                   <p className='text-xs text-[var(--color-base)]'>Type:</p>
@@ -156,7 +152,7 @@ export default function Dashboard() {
                       link={project.link} 
                       image={project.image_url} 
                       type={project.type}
-                      updated={project.updated_at}
+                      updated={project.last_updated_at}
                   />
                 ))}
               </div>
@@ -183,8 +179,6 @@ export default function Dashboard() {
               setIsOpen={setIsOpen} 
               onProjectCreated={handleProjectCreated} 
               options={options}
-              value={type}
-              onChange={(e) => setType(e.target.value)} 
             />
           </div>
         </div>
