@@ -4,7 +4,7 @@ import Header from '@/app/components/dashboard/header'
 import Dropdown from '@/app/components/dropdown'
 import Projects from '@/app/components/dashboard/projects'
 import Pagination from '@/app/components/pagination'
-import New from '@/app/components/dashboard/new'
+import Panel from '@/app/components/dashboard/panel'
 
 import Image from 'next/image'
 import { SignedIn } from '@clerk/nextjs'
@@ -137,7 +137,7 @@ export default function Dashboard() {
                   <p className='text-xs font-semibold'>Add project</p>
               </button>
             </div>
-            <div className="flex flex-col mb-5">
+            <div className="flex flex-col">
               <div className='bg-[var(--color-grey-light)] text-xs text-[var(--color-base)] font-semibold flex flex-row items-center w-full py-2 rounded-lg'>
                 {projectData.map((item, i) => (
                   <div key={i} className={`${item.width} text-center`}>{item.name}</div>
@@ -147,17 +147,14 @@ export default function Dashboard() {
                 {projects.map((project) => (
                   <Projects 
                       key={project._id}  
-                      title={project.title} 
-                      slug={project.slug} 
-                      link={project.link} 
-                      image={project.image_url} 
-                      type={project.type}
-                      updated={project.last_updated_at}
+                      project={project}
+                      options={options}
+                      onProjectUpdated={handleProjectCreated}
                   />
                 ))}
               </div>
             </div>
-            <div className="flex flex-row gap-2 items-center justify-center">
+            <div className="flex flex-row gap-2 items-center justify-center my-10">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
                 <div key={num} className='bg-[var(--color-base)] text-[var(--color-text)] hover:bg-[var(--color-base)] hover:text-[var(--color-text)] rounded-md'>
                   <Pagination
@@ -172,14 +169,16 @@ export default function Dashboard() {
         </div>
 
         <div className={`fixed inset-0 z-50 bg-[#00000099] ${newProject ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-          <div className={`fixed top-0 right-0 h-full w-1/3 transition-all duration-500 ease-in-out bg-[#00000099] shadow-lg overflow-y-auto
+          <div className={`fixed top-0 right-0 h-full min-w-100 w-1/3 transition-all duration-500 ease-in-out bg-[#00000099] shadow-lg overflow-y-auto
               ${newProject ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"}`}
           >
-            <New 
-              setNewProject={setNewProject} 
-              onProjectCreated={handleProjectCreated} 
-              options={options}
-            />
+            <div className='shadow-md p-10 z-50 bg-[var(--color-text)]'>
+              <Panel 
+                setProject={setNewProject} 
+                onProjectUpdated={handleProjectCreated} 
+                options={options}
+              />
+            </div>
           </div>
         </div>
       </SignedIn>
