@@ -2,14 +2,17 @@
 
 import Image from "next/image"
 import { useState } from "react"
+import { useAuth } from "@clerk/nextjs"
 import Dropdown from "../dropdown"
 
 type PanelProps = {
   setIsOpen: (isOpen: boolean) => void
   onProjectCreated: (project: Project) => void
   options: { name: string; value: string }[]
-  value: string
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+}
+
+type Cover = {
+  url: string
 }
 
 type Project = {
@@ -19,10 +22,12 @@ type Project = {
   link: string;
   image_url: string;
   type: string;
-  updated_at: string;
+  last_updated_at: string;
 };
 
-export default function New({setIsOpen, onProjectCreated, options, value, onChange}: PanelProps) {
+export default function New({setIsOpen, onProjectCreated, options}: PanelProps) {
+    const {getToken} = useAuth()
+
     const project = ["Project Title", "Slug", "Link"]
     const [values, setValues] = useState<string[]>(Array(project.length).fill(""))
     const [cover, setCover] = useState<File | null>(null)
@@ -30,20 +35,53 @@ export default function New({setIsOpen, onProjectCreated, options, value, onChan
     const [successMsg, setSuccessMsg] = useState("")
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+    const uploadCover = async (file: File, token: string): Promise<string> => {
+      const formData = new FormData()
+      formData.append("name", file.name)
+      formData.append("file", file)
+
+      const res = await fetch(`${apiUrl}/cover/upload`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+        body: formData,
+      })
+    
+      if (!res.ok) throw new Error("Failed to upload cover")
+
+      const data = (await res.json()) as Cover;
+      return data.url
+    }
+
     const newProject = async () => {
       try {
+        const token = await getToken({template: "default"})
+        if (!token) throw new Error("No token available")
+        
+        let coverUrl = ""
+        if (cover) {
+          coverUrl = await uploadCover(cover, token)
+        }
+
+        if (!values[0] || !values[1] || !values[2] || !type) {
+          console.error("Missing required project fields")
+          return
+        }
+
         const body = {
-          title: value[0],
-          slug: value[1],
-          image_url: cover,
-          link: value[2],
-          type: type,
+          title: values[0],
+          slug: values[1],
+          image_url: coverUrl || "logo2.png",
+          link: values[2],
+          type: type.toLowerCase(),
         }
       
         const res = await fetch(`${apiUrl}/project/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify(body),
         })
@@ -54,9 +92,7 @@ export default function New({setIsOpen, onProjectCreated, options, value, onChan
 
         onProjectCreated(data)
         setSuccessMsg("Project uploaded successfully")
-        setValues(Array(project.length).fill(""))
-        setType(options[0]?.value ?? "")
-        setCover(null)
+        resetForm()
       } catch (err) {
         console.error("Error creating project:", err)
       }
@@ -65,6 +101,7 @@ export default function New({setIsOpen, onProjectCreated, options, value, onChan
     const resetForm = () => {
       setValues(Array(project.length).fill(""))
       setType(options[0]?.value ?? "")
+      setCover(null)
     }
 
   return (
@@ -159,7 +196,7 @@ export default function New({setIsOpen, onProjectCreated, options, value, onChan
         </div>
 
         {successMsg && (
-          <p className="text-xs text-green-500 my-2">{successMsg}</p>
+          <span className="text-xs text-[var(--color-base)] my-2">{successMsg}</span>
         )}
       </form>
     </div>
