@@ -14,7 +14,7 @@ export default function HomePage() {
     if (isSignedIn) {
       router.push("/home");
     } else {
-      router.push("/login");
+      router.push("/auth");
     }
   };
 
