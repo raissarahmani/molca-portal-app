@@ -11,12 +11,12 @@ type ProjectProps = {
 
 export default function Projects({title, slug, link, image, type, updated}: ProjectProps) {
   return (
-    <div className='flex flex-row text-[var(--color-base)] text-xs'>
-      <div className="w-30 px-2">{image}</div>
-      <div className="w-50 px-2">{title}</div>
+    <div className='flex flex-row items-center text-[var(--color-base)] text-xs cursor-pointer hover:bg-[var(--color-grey-light)] py-2 rounded-md'>
+      <div className="w-30 px-2 truncate">{image}</div>
+      <div className="w-50 px-2 truncate">{title}</div>
       <div className="w-30 px-2">{type}</div>
-      <div className="w-20 px-2">{slug}</div>
-      <div className="flex flex-row justify-center items-center gap-2 w-40 px-2">
+      <div className="w-20 px-2 truncate">{slug}</div>
+      <div className="flex flex-row items-center gap-2 w-50 px-2">
         <Image
           src="/link.png"
           alt="Link"
@@ -24,9 +24,19 @@ export default function Projects({title, slug, link, image, type, updated}: Proj
           height={15}
           className="object-contain"
         />
-        <p className="text-xs">{link}</p>
+        <p className="text-xs truncate">{link}</p>
       </div>
-      <div className="w-30 px-2 text-center">{updated}</div>
+      <div className="w-30 px-2">
+        {new Date(updated).toLocaleString('en-GB', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }).replace(',', '')}
+      </div>
       <div className="flex flex-row justify-center items-center gap-2 w-20 px-2">
         <Image
           src="/edit.png"
