@@ -57,9 +57,9 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
   return (
     <div className="relative">
       <SignedIn>
-      <div  className='flex flex-row items-center text-[var(--color-base)] text-xs cursor-pointer hover:bg-[var(--color-grey-light)] py-2 rounded-md'>
+      <div  className='flex flex-row items-center text-[var(--color-base)] text-xs hover:bg-[var(--color-grey-light)] py-2 rounded-md'>
         <div className="w-30 px-2 truncate">{project.image_url}</div>
-        <div onClick={() => setShowProject(true)} className="w-50 px-2 truncate">{project.title}</div>
+        <div onClick={() => setShowProject(true)} className="w-50 px-2 truncate hover:font-semibold cursor-pointer">{project.title}</div>
         <div className="w-30 px-2">{project.type}</div>
         <div className="w-30 px-2 truncate">{project.slug}</div>
         <div className="flex flex-row items-center gap-2 w-30 px-2">
@@ -111,9 +111,9 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
         </div>
       </div>
 
-      <div className={`fixed inset-0 z-50 bg-[#00000099] ${showProject ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+      <div className={`fixed inset-0 z-50 bg-[#00000099] ${showProject && !editProject ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
         <div className={`fixed top-0 right-0 h-full min-w-100 w-1/3 transition-all duration-500 ease-in-out bg-[#00000099] shadow-lg overflow-y-auto overflow-x-hidden
-            ${showProject ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"}`}
+            ${showProject && !editProject ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"}`}
         >
           <div className='shadow-md p-10 z-50 bg-[var(--color-text)]'>
             <Project
@@ -121,6 +121,8 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
               options={options}
               onProjectUpdated={onProjectUpdated} 
               setShowProject={setShowProject}
+              editProject={editProject}
+              setEditProject={setEditProject}
             />
           </div>
         </div>

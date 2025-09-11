@@ -141,6 +141,7 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
 
       const timer = setTimeout(() => {
         setSuccessMsg("");
+        setProject(false)
         resetForm()
       }, 2000);
     
@@ -150,7 +151,7 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
   return (
     <>
       <div className="flex flex-row justify-between items-center">
-        <p className='text-2xl text-[var(--color-base)] font-semibold'>Add Project</p>
+        <p className='text-2xl text-[var(--color-base)] font-semibold'>{project?._id ? 'Edit Project' : 'Add Project'}</p>
         <Image 
           src="/close.svg"
           alt="close" 
@@ -244,7 +245,7 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
         </div>
 
         {successMsg && (
-          <span className="text-xs text-[var(--color-base)] my-2">{successMsg}</span>
+          <span className="text-xs text-green-500 font-semibold my-2">{successMsg}</span>
         )}
       </form>
     </>

@@ -1,7 +1,4 @@
-"use client"
-
 import Image from "next/image"
-import { useState } from "react"
 import Panel from "@/app/components/dashboard/panel"
 
 type Project = {
@@ -18,12 +15,12 @@ type ProjectProps = {
   project: Project
   onProjectUpdated?: (project: Project) => void
   options: { name: string; value: string }[]
-  setShowProject: (newProject: boolean) => void
+  setShowProject: (showProject: boolean) => void
+  editProject: boolean
+  setEditProject: (editProject: boolean) => void
 }
 
-export default function Project({project, options, onProjectUpdated, setShowProject}: ProjectProps) {
-    const [editProject, setEditProject] = useState(false)
-
+export default function Project({project, options, onProjectUpdated, setShowProject, editProject, setEditProject}: ProjectProps) {
   return (
     <>
       <div className="flex flex-row justify-between items-center">
@@ -86,7 +83,16 @@ export default function Project({project, options, onProjectUpdated, setShowProj
         </div>
       </div>
 
-      <button type="button" onClick={() => setEditProject(true)} className="w-full font-normal text-sm button bg-[var(--color-grey-light)] text-[var(--color-grey)] hover:bg-[var(--color-red)] hover:text-[var(--color-text)]">Edit</button>
+      <button 
+        type="button" 
+        onClick={() => {
+          setShowProject(false)
+          setEditProject(true); 
+        }} 
+        className="w-full font-normal text-sm button bg-[var(--color-grey-light)] text-[var(--color-grey)] hover:bg-[var(--color-red)] hover:text-[var(--color-text)]"
+      >
+        Edit
+      </button>
 
       <div className={`fixed inset-0 z-50 bg-[#00000099] ${editProject ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
         <div className={`fixed top-0 right-0 h-full min-w-100 w-1/3 transition-all duration-500 ease-in-out bg-[#00000099] shadow-lg overflow-y-auto
