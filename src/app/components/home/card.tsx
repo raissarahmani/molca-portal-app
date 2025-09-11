@@ -7,7 +7,7 @@ type CardProps = {
 
 export default function card({ title }: CardProps) {
   return (
-    <div className='flex flex-col items-center justify-center bg-[var(--color-text)] rounded-lg relative w-[250px] h-[300px] cursor-pointer hover:scale-105 hover:duration-200'>
+    <div className='flex flex-col items-center justify-center bg-[var(--color-text)] rounded-lg relative max-w-[250px] h-[300px] cursor-pointer hover:scale-105 hover:duration-200'>
       <Image
         src="/noimage.png"
         alt="No image"

@@ -55,7 +55,7 @@ export default function Menu() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: (limit + 1).toString()
+          limit: limit.toString()
         });
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
