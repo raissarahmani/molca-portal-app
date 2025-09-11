@@ -50,8 +50,8 @@ export default function Dashboard() {
     { name: "Action", width: "w-30"},
   ]
 
-  const handleProjectCreated = (project: Project) => {
-    setProjects((prev) => [project, ...prev])
+  const handleProject = () => {
+    void fetchProjects()
   }
 
   const fetchProjects = async () => {
@@ -67,7 +67,7 @@ export default function Dashboard() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: limit.toString(),
+          limit: (limit + 1).toString()
         });
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
@@ -81,9 +81,9 @@ export default function Dashboard() {
         data: Project[];
       };
 
-      setProjects(result.data ?? []);
-      setTotalPages(Math.ceil((result.data?.length ?? 0) / limit))
-      console.log(result.data)
+      const nextPage = result.data.length > limit
+      setProjects(result.data.slice(0, limit))
+      setTotalPages(nextPage ? page + 1 : page)
     } catch (err) {
       console.error("Error fetching projects:", err);
     }
@@ -149,7 +149,7 @@ export default function Dashboard() {
                       key={project._id}  
                       project={project}
                       options={options}
-                      onProjectUpdated={handleProjectCreated}
+                      onProjectUpdated={handleProject}
                   />
                 ))}
               </div>
@@ -175,7 +175,7 @@ export default function Dashboard() {
             <div className='shadow-md p-10 z-50 bg-[var(--color-text)]'>
               <Panel 
                 setProject={setNewProject} 
-                onProjectUpdated={handleProjectCreated} 
+                onProjectUpdated={handleProject} 
                 options={options}
               />
             </div>

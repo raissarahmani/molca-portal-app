@@ -40,7 +40,7 @@ export default function Menu() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: limit.toString(),
+          limit: (limit + 1).toString()
         });
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
@@ -54,9 +54,9 @@ export default function Menu() {
         data: Project[];
       };
 
-      setProjects(result.data ?? []);
-      setTotalPages(Math.ceil((result.data?.length ?? 0) / limit))
-      console.log(result.data)
+      const nextPage = result.data.length > limit
+      setProjects(result.data.slice(0, limit))
+      setTotalPages(nextPage ? page + 1 : page)
     } catch (err) {
       console.error("Error fetching projects:", err);
     }
