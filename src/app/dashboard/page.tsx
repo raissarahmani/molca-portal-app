@@ -9,6 +9,7 @@ import Panel from '@/app/components/dashboard/panel'
 import Image from 'next/image'
 import { SignedIn, useAuth, useUser } from '@clerk/nextjs'
 import { useState, useEffect } from 'react'
+import { text } from 'stream/consumers'
 
 type Project = {
   _id: string;
@@ -36,12 +37,12 @@ export default function Dashboard() {
 
   const options = [
     {name: "Select type", value: ""},
-    {name: "Digital Twin", value: "digital-twin"},
-    {name: "VR", value: "vr"},
-    {name: "AR", value: "ar"},
-    {name: "Smart Manufacturing", value: "smart-manufacture"},
-    {name: "Deck", value: "deck"},
-    {name: "Tools", value: "tool"},
+    {name: "Digital Twin", value: "digital-twin", bg: "bg-[var(--color-green-light)]", text: "text-[var(--color-green)]"},
+    {name: "VR", value: "vr", bg: "bg-[var(--color-yellow-light)]", text: "text-[var(--color-yellow)]"},
+    {name: "AR", value: "ar", bg: "bg-[var(--color-blue-light)]", text: "text-[var(--color-blue)]"},
+    {name: "Smart Manufacturing", value: "smart-manufacture", bg: "bg-[var(--color-maroon-light)]", text: "text-[var(--color-maroon)]"},
+    {name: "Deck", value: "deck", bg: "bg-[var(--color-gray-light)]", text: "text-[var(--color-gray)]"},
+    {name: "Tools", value: "tool", bg: "bg-[var(--color-purple-light)]", text: "text-[var(--color-purple)]"},
   ]
   const filteredOptions = options.map(option => option).filter(option => {
     if (role === "sales") {
@@ -94,7 +95,7 @@ export default function Dashboard() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: limit.toString()
+          limit: (limit + 1).toString()
         });
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
