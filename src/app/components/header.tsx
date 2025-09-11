@@ -3,11 +3,23 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { SignedIn, UserButton } from "@clerk/nextjs"
+import { SignedIn, UserButton, useUser } from "@clerk/nextjs"
 
 export default function Header() {
   const [active, setActive] = useState('')
+  
+  const {user, isLoaded} = useUser()
+  if (!isLoaded) return null;
+  const role = user?.publicMetadata.role
+  console.log(role)
+
   const options = ["Digital Twin", "VR", "AR", "Smart Manufacturing", "Deck", "Tools"]
+  const filteredOptions = options.filter(option => {
+    if (role === "sales") {
+      return ["Deck", "Tools"].includes(option)
+    }
+    return true
+  })
 
   return (
     <div className="w-full py-1 px-5 flex flex-row justify-between items-center relative">
@@ -21,7 +33,7 @@ export default function Header() {
 
       <SignedIn>
         <div className="flex gap-6">
-          {options.map((option) => (
+          {filteredOptions.map(option => (
             <button
               key={option}
               onClick={() => setActive(option)}
@@ -33,7 +45,7 @@ export default function Header() {
             >
               {option}
             </button>
-          ))}
+            ))}
         </div>
         
         <div className="flex flex-row gap-3 items-center px-3">

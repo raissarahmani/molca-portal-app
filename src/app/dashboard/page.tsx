@@ -7,7 +7,7 @@ import Pagination from '@/app/components/pagination'
 import Panel from '@/app/components/dashboard/panel'
 
 import Image from 'next/image'
-import { SignedIn, useAuth } from '@clerk/nextjs'
+import { SignedIn, useAuth, useUser } from '@clerk/nextjs'
 import { useState, useEffect } from 'react'
 
 type Project = {
@@ -29,6 +29,11 @@ export default function Dashboard() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const {getToken} = useAuth()
 
+  const {user} = useUser()
+  // if (!isLoaded) return null;
+  const role = user?.publicMetadata.role
+  console.log(role)
+
   const options = [
     {name: "Select type", value: ""},
     {name: "Digital Twin", value: "digital-twin"},
@@ -38,6 +43,13 @@ export default function Dashboard() {
     {name: "Deck", value: "deck"},
     {name: "Tools", value: "tool"},
   ]
+  const filteredOptions = options.map(option => option).filter(option => {
+    if (role === "sales") {
+      return ["Select type", "Deck", "Tools"].includes(option.name);
+    }
+    return true;
+  });
+
   const [type, setType] = useState(options[0]?.value ?? "")
   const limit = 10
 
@@ -82,7 +94,7 @@ export default function Dashboard() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: (limit + 1).toString()
+          limit: limit.toString()
         });
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
@@ -127,7 +139,7 @@ export default function Dashboard() {
                   <p className='text-xs text-[var(--color-base)]'>Type:</p>
                   <div className='bg-[var(--color-grey-light)] text-[var(--color-base)]'>
                     <Dropdown 
-                      options={options}
+                      options={filteredOptions}
                       value={type}
                       onChange={(e) => setType(e.target.value)} 
                     />
@@ -152,12 +164,14 @@ export default function Dashboard() {
                     />
                   </div>
               </div>
-              <button 
-                onClick={() => setNewProject(true)} 
-                className='button m-0 py-0 px-3 bg-[var(--color-red)] border-[var(--color-red)] flex flex-row gap-2 items-center justify-center'>
-                  <p className='font-semibold'>+</p>
-                  <p className='text-xs font-semibold'>Add project</p>
-              </button>
+              {role === "admin" && (
+                <button 
+                  onClick={() => setNewProject(true)} 
+                  className='button m-0 py-0 px-3 bg-[var(--color-red)] border-[var(--color-red)] flex flex-row gap-2 items-center justify-center'>
+                    <p className='font-semibold'>+</p>
+                    <p className='text-xs font-semibold'>Add project</p>
+                </button>
+              )}
             </div>
             <div className="flex flex-col">
               <div className='bg-[var(--color-grey-light)] text-xs text-[var(--color-base)] font-semibold flex flex-row items-center w-full py-2 rounded-lg'>
