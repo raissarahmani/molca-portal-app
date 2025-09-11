@@ -69,6 +69,7 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
       try {
         const token = await getToken({ template: "default" });
         if (!token) throw new Error("No token available");
+        console.log(token)
       
         let coverUrl = "";
         const fileInput = document.getElementById("cover") as HTMLInputElement;
@@ -115,18 +116,16 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
 
         if (!res.ok) {
           const errorText = await res.text();
-          console.error("Save project error:", res.status, errorText);
           throw new Error(`Failed (${res.status}): ${errorText}`);
         }
 
         const data = (await res.json()) as Project
 
-        if (project?._id) {
-          if (onProjectUpdated) onProjectUpdated(data)
-          setSuccessMsg("Project updated successfully")
-        } else {
-          setSuccessMsg("Project uploaded successfully")
-        }
+        if (onProjectUpdated) onProjectUpdated(data)
+
+        setSuccessMsg(
+          (project?._id ? "Project updated successfully" : "Project uploaded successfully")
+        )
       } catch (err) {
         console.error("Error saving project:", err)
       }

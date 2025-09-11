@@ -47,7 +47,6 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
 
       if (!res.ok) {
         const errorText = await res.text();
-        console.error("Delete project error:", res.status, errorText);
         throw new Error(`Failed (${res.status}): ${errorText}`);
       }
     } catch (err) {
