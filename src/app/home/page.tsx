@@ -3,7 +3,7 @@
 import Header from '@/app/components/header'
 import Card from '@/app/components/home/card'
 import Pagination from '@/app/components/pagination'
-import { SignedIn, SignedOut } from '@clerk/nextjs'
+import { SignedIn, SignedOut, useAuth } from '@clerk/nextjs'
 
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
@@ -26,16 +26,31 @@ export default function Menu() {
   const [totalPages, setTotalPages] = useState(1);
   const limit = 8;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const {getToken} = useAuth()
 
   const fetchProjects = async () => {
     try {
+      const token = await getToken({ template: "default" });
+      if (!token) throw new Error("No token available");
+      console.log(token)
+
       let res: Response;
 
       if (search) {
-        res = await fetch(`${apiUrl}/project/${search}`, { cache: "no-store" });
+        res = await fetch(`${apiUrl}/project/${encodeURIComponent(search)}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        })
 
-        if (!res.ok) {
-          res = await fetch(`${apiUrl}/project/slug/${search}`, { cache: "no-store" });
+        if (res.status >= 400 && res.status < 500) {
+          res = await fetch(`${apiUrl}/project/slug/${encodeURIComponent(search)}`, {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            },
+          })
         }
       } else {
         const params = new URLSearchParams({
@@ -51,11 +66,18 @@ export default function Menu() {
         code: string;
         status: number;
         message: string;
-        data: Project[];
+        data: Project | Project[];
       };
 
-      const nextPage = result.data.length > limit
-      setProjects(result.data.slice(0, limit))
+      let data: Project[] = [];
+      if (Array.isArray(result.data)) {
+        data = result.data;
+      } else if (result.data) {
+        data = [result.data];
+      }
+
+      const nextPage = data.length > limit
+      setProjects(data.slice(0, limit))
       setTotalPages(nextPage ? page + 1 : page)
     } catch (err) {
       console.error("Error fetching projects:", err);
@@ -94,7 +116,7 @@ export default function Menu() {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-5 min-h-[350px] my-5">
+          <div className="grid grid-cols-4 min-gap-1 gap-5 min-h-[350px] my-5">
             {projects.map((project) => (
               <Card key={project._id} image={project.image_url} title={project.title} />
             ))}

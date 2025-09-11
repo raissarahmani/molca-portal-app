@@ -7,7 +7,7 @@ import Pagination from '@/app/components/pagination'
 import Panel from '@/app/components/dashboard/panel'
 
 import Image from 'next/image'
-import { SignedIn } from '@clerk/nextjs'
+import { SignedIn, useAuth } from '@clerk/nextjs'
 import { useState, useEffect } from 'react'
 
 type Project = {
@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [totalPages, setTotalPages] = useState(1);
   const [newProject, setNewProject] = useState(false)
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const {getToken} = useAuth()
 
   const options = [
     {name: "Select type", value: ""},
@@ -56,13 +57,27 @@ export default function Dashboard() {
 
   const fetchProjects = async () => {
     try {
+      const token = await getToken({ template: "default" });
+      if (!token) throw new Error("No token available");
+      console.log(token)
+      
       let res: Response;
 
       if (search) {
-        res = await fetch(`${apiUrl}/project/${search}`, { cache: "no-store" });
+        res = await fetch(`${apiUrl}/project/${encodeURIComponent(search)}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        })
 
-        if (!res.ok) {
-          res = await fetch(`${apiUrl}/project/slug/${search}`, { cache: "no-store" });
+        if (res.status >= 400 && res.status < 500) {
+          res = await fetch(`${apiUrl}/project/slug/${encodeURIComponent(search)}`, {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            },
+          })
         }
       } else {
         const params = new URLSearchParams({
@@ -81,8 +96,15 @@ export default function Dashboard() {
         data: Project[];
       };
 
-      const nextPage = result.data.length > limit
-      setProjects(result.data.slice(0, limit))
+      let data: Project[] = [];
+      if (Array.isArray(result.data)) {
+        data = result.data;
+      } else if (result.data) {
+        data = [result.data];
+      }
+
+      const nextPage = data.length > limit
+      setProjects(data.slice(0, limit))
       setTotalPages(nextPage ? page + 1 : page)
     } catch (err) {
       console.error("Error fetching projects:", err);
