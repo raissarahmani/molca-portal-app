@@ -14,13 +14,15 @@ type Project = {
 type ProjectProps = {
   project: Project
   onProjectUpdated?: (project: Project) => void
-  options: { name: string; value: string }[]
+  options: { name: string; value: string; bg?: string; text?: string }[]
   setShowProject: (showProject: boolean) => void
   editProject: boolean
   setEditProject: (editProject: boolean) => void
 }
 
 export default function Project({project, options, onProjectUpdated, setShowProject, editProject, setEditProject}: ProjectProps) {
+  const matchedOption = options.find(opt => opt.value === project.type)
+  
   return (
     <>
       <div className="flex flex-row justify-between items-center">
@@ -41,7 +43,9 @@ export default function Project({project, options, onProjectUpdated, setShowProj
                 <p className="font-semibold text-[var(--color-base)] truncate">{project.title}</p>
                 <p className="text-[var(--color-grey)] text-xs truncate">{project.slug}</p>
             </div>
-            <div className="text-xs text-[var(--color-base)]">{project.type}</div>
+            <div className="text-xs text-[var(--color-base)]">
+              <span className={`${matchedOption?.bg} ${matchedOption?.text} rounded-md px-1`}>{project.type}</span>
+            </div>
         </div>
         <div className="w-full h-50 my-5 bg-[var(--color-grey-light)] flex flex-col items-center justify-center rounded-md">
             <Image 

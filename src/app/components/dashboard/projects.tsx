@@ -6,7 +6,7 @@ import { useState } from "react"
 import Project from "@/app/components/dashboard/project"
 import Panel from "@/app/components/dashboard/panel"
 import Modal from "@/app/components/dashboard/modal"
-import { useAuth, SignedIn } from "@clerk/nextjs"
+import { SignedIn } from "@clerk/nextjs"
 
 type ProjectDetail = {
   _id: string;
@@ -20,39 +20,16 @@ type ProjectDetail = {
 
 type ProjectProps = {
   project: ProjectDetail
-  options: { name: string; value: string }[]
+  options: { name: string; value: string; bg?: string; text?: string }[]
   onProjectUpdated?: (project: ProjectDetail) => void
 }
 
 export default function Projects({project, options, onProjectUpdated}: ProjectProps) {
   const [showProject, setShowProject] = useState(false)
   const [editProject, setEditProject] = useState(false)
-  // const [deleteProject, setDeleteProject] = useState(false)
-  const {getToken} = useAuth()
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const [openModal, setOpenModal] = useState(false)
 
-  const removeProject = async () => {
-    if (!project?._id) return;
-
-    try {
-      const token = await getToken({ template: "default" });
-      if (!token) throw new Error("No token available");
-
-      const res = await fetch(`${apiUrl}/project/${project._id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Failed (${res.status}): ${errorText}`);
-      }
-    } catch (err) {
-      console.error("Error deleting project:", err);
-    }
-  };
+  const matchedOption = options.find(opt => opt.value === project.type)
 
   return (
     <div className="relative">
@@ -60,7 +37,9 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
       <div  className='flex flex-row items-center text-[var(--color-base)] text-xs hover:bg-[var(--color-grey-light)] py-2 rounded-md'>
         <div className="w-30 px-2 truncate">{project.image_url}</div>
         <div onClick={() => setShowProject(true)} className="w-50 px-2 truncate hover:font-semibold cursor-pointer">{project.title}</div>
-        <div className="w-30 px-2">{project.type}</div>
+        <div className="w-30 px-2">
+          <span className={`${matchedOption?.bg} ${matchedOption?.text} rounded-md px-1`}>{project.type}</span>
+        </div>
         <div className="w-30 px-2 truncate">{project.slug}</div>
         <div className="flex flex-row items-center gap-2 w-30 px-2">
           <Image
@@ -70,7 +49,7 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
             height={15}
             className="object-contain"
           />
-          <a className="text-xs truncate">{project.link}</a>
+          <a href={project.link} className="text-xs truncate">{project.link}</a>
         </div>
         <div className="w-30 px-2">
           {new Date(project.last_updated_at).toLocaleString('en-GB', {
@@ -95,10 +74,7 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
           </button>
           <button 
             type="button"
-            onClick={async () => {
-              await removeProject()
-              if (onProjectUpdated) onProjectUpdated(project)
-            }}
+            onClick={() => setOpenModal(true)}
              className="button m-0">
             <Image
               src="/delete.png"
@@ -143,9 +119,13 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
         </div>
       </div>
 
-      {/* {deleteProject && (
-        <Modal />
-      )} */}
+      {openModal && (
+        <Modal 
+          project={project}
+          onProjectUpdated={onProjectUpdated}
+          setOpenModal={setOpenModal}
+        />
+      )}
       </SignedIn>
     </div>
   )
