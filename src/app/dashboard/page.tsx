@@ -9,7 +9,6 @@ import Panel from '@/app/components/dashboard/panel'
 import Image from 'next/image'
 import { SignedIn, useAuth, useUser } from '@clerk/nextjs'
 import { useState, useEffect } from 'react'
-import { text } from 'stream/consumers'
 
 type Project = {
   _id: string;
@@ -55,13 +54,13 @@ export default function Dashboard() {
   const limit = 10
 
   const projectData = [
-    { name: "Image", width: "w-30"},
-    { name: "Project Name", width: "w-50"},
-    { name: "Type", width: "w-30"},
-    { name: "Slug", width: "w-30"},
-    { name: "Link", width: "w-30"},
-    { name: "Last Update", width: "w-30"},
-    { name: "Action", width: "w-30"},
+    { name: "Image", width: "min-w-30"},
+    { name: "Project Name", width: "min-w-50"},
+    { name: "Type", width: "min-w-30"},
+    { name: "Slug", width: "min-w-30"},
+    { name: "Link", width: "min-w-30"},
+    { name: "Last Update", width: "min-w-30"},
+    { name: "Action", width: "min-w-30"},
   ]
 
   const handleProject = () => {
@@ -132,76 +131,73 @@ export default function Dashboard() {
     <div className='bg-[var(--color-text)] min-h-screen'>
       <SignedIn>
         <Header />
-        <div className='flex flex-row'>
-          <div className='w-1/5'></div>
-          <div className='flex flex-col gap-3 w-4/5 px-10'>
-            <div className='flex flex-row justify-between w-full my-5'>
-              <div className='flex flex-row gap-3 items-center px-2'>
-                  <p className='text-xs text-[var(--color-base)]'>Type:</p>
-                  <div className='bg-[var(--color-grey-light)] text-[var(--color-base)]'>
-                    <Dropdown 
-                      options={filteredOptions}
-                      value={type}
-                      onChange={(e) => setType(e.target.value)} 
-                    />
-                  </div>
-                  <div className="flex flex-row gap-2 input border-[var(--color-grey-light)] rounded-lg py-1 text-xs">
-                    <Image
-                      src="/Search2.png"
-                      alt="Search"
-                      width={15}
-                      height={15}
-                      className="object-contain"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      value={search}
-                      onChange={(e) => {
-                        setPage(1);
-                        setSearch(e.target.value);
-                      }}
-                      className="input-form text-[var(--color-base)]"
-                    />
-                  </div>
-              </div>
-              {role === "admin" && (
-                <button 
-                  onClick={() => setNewProject(true)} 
-                  className='button m-0 py-0 px-3 bg-[var(--color-red)] border-[var(--color-red)] flex flex-row gap-2 items-center justify-center'>
-                    <p className='font-semibold'>+</p>
-                    <p className='text-xs font-semibold'>Add project</p>
-                </button>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <div className='bg-[var(--color-grey-light)] text-xs text-[var(--color-base)] font-semibold flex flex-row items-center w-full py-2 rounded-lg'>
-                {projectData.map((item, i) => (
-                  <div key={i} className={`${item.width} text-center`}>{item.name}</div>
-                ))}
-              </div>
-              <div className='flex flex-col gap-3 py-2'>
-                {projects.map((project) => (
-                  <Projects 
-                      key={project._id}  
-                      project={project}
-                      options={options}
-                      onProjectUpdated={handleProject}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-row gap-2 items-center justify-center my-10">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-                <div key={num} className='bg-[var(--color-base)] text-[var(--color-text)] hover:bg-[var(--color-base)] hover:text-[var(--color-text)] rounded-md'>
-                  <Pagination
-                    page={String(num)}
-                    active={num === page}
-                    onClick={() => setPage(num)}
+        <div className='flex flex-col gap-3 px-10'>
+          <div className='flex flex-row justify-between w-full my-5'>
+            <div className='flex flex-row gap-3 items-center px-2'>
+                <p className='text-xs text-[var(--color-base)]'>Type:</p>
+                <div className='bg-[var(--color-grey-light)] text-[var(--color-base)]'>
+                  <Dropdown 
+                    options={filteredOptions}
+                    value={type}
+                    onChange={(e) => setType(e.target.value)} 
                   />
                 </div>
+                <div className="flex flex-row gap-2 input border-[var(--color-grey-light)] rounded-lg py-1 text-xs">
+                  <Image
+                    src="/Search2.png"
+                    alt="Search"
+                    width={15}
+                    height={15}
+                    className="object-contain"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={(e) => {
+                      setPage(1);
+                      setSearch(e.target.value);
+                    }}
+                    className="input-form text-[var(--color-base)]"
+                  />
+                </div>
+            </div>
+            {role === "admin" && (
+              <button 
+                onClick={() => setNewProject(true)} 
+                className='button m-0 py-0 px-3 bg-[var(--color-red)] border-[var(--color-red)] flex flex-row gap-2 items-center justify-center'>
+                  <p className='font-semibold'>+</p>
+                  <p className='text-xs font-semibold'>Add project</p>
+              </button>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <div className='bg-[var(--color-grey-light)] text-xs text-[var(--color-base)] font-semibold flex flex-row items-center w-full py-2 rounded-lg'>
+              {projectData.map((item, i) => (
+                <div key={i} className={`${item.width} flex-1 text-center`}>{item.name}</div>
               ))}
             </div>
+            <div className='flex flex-col gap-3 py-2'>
+              {projects.map((project) => (
+                <Projects 
+                    key={project._id}  
+                    project={project}
+                    options={options}
+                    onProjectUpdated={handleProject}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-row gap-2 items-center justify-center my-10">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+              <div key={num} className='bg-[var(--color-base)] text-[var(--color-text)] hover:bg-[var(--color-base)] hover:text-[var(--color-text)] rounded-md'>
+                <Pagination
+                  page={String(num)}
+                  active={num === page}
+                  onClick={() => setPage(num)}
+                />
+              </div>
+            ))}
           </div>
         </div>
 

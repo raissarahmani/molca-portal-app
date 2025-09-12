@@ -35,13 +35,13 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
     <div className="relative">
       <SignedIn>
       <div  className='flex flex-row items-center text-[var(--color-base)] text-xs hover:bg-[var(--color-grey-light)] py-2 rounded-md'>
-        <div className="w-30 px-2 truncate">{project.image_url}</div>
-        <div onClick={() => setShowProject(true)} className="w-50 px-2 truncate hover:font-semibold cursor-pointer">{project.title}</div>
-        <div className="w-30 px-2">
+        <div className="flex-1 min-w-30 px-2 truncate">{project.image_url}</div>
+        <div onClick={() => setShowProject(true)} className="flex-1 min-w-50 px-2 truncate hover:font-semibold cursor-pointer">{project.title}</div>
+        <div className="flex-1 min-w-30 px-2">
           <span className={`${matchedOption?.bg} ${matchedOption?.text} rounded-md px-1`}>{project.type}</span>
         </div>
-        <div className="w-30 px-2 truncate">{project.slug}</div>
-        <div className="flex flex-row items-center gap-2 w-30 px-2">
+        <div className="flex-1 min-w-30 px-2 truncate">{project.slug}</div>
+        <div className="flex flex-row flex-1 items-center gap-2 min-w-30 px-2">
           <Image
             src="/link.png"
             alt="Link"
@@ -51,7 +51,7 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
           />
           <a href={project.link} className="text-xs truncate">{project.link}</a>
         </div>
-        <div className="w-30 px-2">
+        <div className="flex-1 min-w-30 px-2">
           {new Date(project.last_updated_at).toLocaleString('en-GB', {
             year: 'numeric',
             month: '2-digit',
@@ -62,7 +62,7 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
             hour12: false
           }).replace(',', '')}
         </div>
-        <div className="flex flex-row justify-center items-center gap-5 w-30 px-2">
+        <div className="flex flex-row flex-1 justify-center items-center gap-5 min-w-30 px-2">
           <button type="button" onClick={() => setEditProject(true)} className="button m-0">
             <Image
               src="/edit.png"
