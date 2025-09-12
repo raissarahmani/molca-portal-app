@@ -118,7 +118,7 @@ export default function Menu() {
 
           <div className="grid grid-cols-4 min-gap-1 gap-5 min-h-[350px] my-5">
             {projects.map((project) => (
-              <Card key={project._id} image={project.image_url} title={project.title} />
+              <Card key={project._id} image={project.image_url} title={project.title} link={project.link} />
             ))}
           </div>
 
