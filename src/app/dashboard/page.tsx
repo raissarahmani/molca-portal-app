@@ -35,7 +35,7 @@ export default function Dashboard() {
   console.log(role)
 
   const options = [
-    {name: "Select type", value: ""},
+    {name: "All", value: ""},
     {name: "Digital Twin", value: "digital-twin", bg: "bg-[var(--color-green-light)]", text: "text-[var(--color-green)]"},
     {name: "VR", value: "vr", bg: "bg-[var(--color-yellow-light)]", text: "text-[var(--color-yellow)]"},
     {name: "AR", value: "ar", bg: "bg-[var(--color-blue-light)]", text: "text-[var(--color-blue)]"},
@@ -96,6 +96,11 @@ export default function Dashboard() {
           page: page.toString(),
           limit: (limit + 1).toString()
         });
+
+        if (type) {
+          params.append("type", type);
+        }
+
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
 
@@ -125,7 +130,7 @@ export default function Dashboard() {
 
   useEffect(() => {
       void fetchProjects();
-    }, [page, search]);
+    }, [page, search, type]);
 
   return (
     <div className='bg-[var(--color-text)] min-h-screen'>

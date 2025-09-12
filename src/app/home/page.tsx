@@ -22,6 +22,7 @@ type Project = {
 export default function Menu() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [search, setSearch] = useState('');
+  const [type, setType] = useState('')
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 8;
@@ -57,6 +58,11 @@ export default function Menu() {
           page: page.toString(),
           limit: (limit + 1).toString()
         });
+
+        if (type) {
+          params.append("type", type.toLowerCase().replace(/\s+/g, "-"));
+        }
+
         res = await fetch(`${apiUrl}/projects/latest?${params.toString()}`, { cache: "no-store" });
       }
 
@@ -86,12 +92,17 @@ export default function Menu() {
 
   useEffect(() => {
     void fetchProjects();
-  }, [page, search]);
+  }, [page, search, type]);
 
   return (
     <div className="flex flex-col justify-between min-h-screen bg-[var(--color-base)]">
       <SignedIn>
-        <div><Header /></div>
+        <div>
+          <Header 
+            active={type}
+            onChange={(value) => setType(value)}
+          />
+        </div>
 
         <div className="px-30">
           <div className="px-50">

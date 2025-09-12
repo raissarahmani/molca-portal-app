@@ -1,19 +1,19 @@
-"use client"
-
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
 import { SignedIn, UserButton, useUser } from "@clerk/nextjs"
 
-export default function Header() {
-  const [active, setActive] = useState('')
-  
+type HeaderProps = {
+  active: string;
+  onChange: (value: string) => void;
+};
+
+export default function Header({ active, onChange }: HeaderProps) {
   const {user, isLoaded} = useUser()
   if (!isLoaded) return null;
   const role = user?.publicMetadata.role
   console.log(role)
 
-  const options = ["Digital Twin", "VR", "AR", "Smart Manufacturing", "Deck", "Tools"]
+  const options = ["Digital Twin", "VR", "AR", "Smart Manufacture", "Deck", "Tools"]
   const filteredOptions = options.filter(option => {
     if (role === "sales") {
       return ["Deck", "Tools"].includes(option)
@@ -36,7 +36,7 @@ export default function Header() {
           {filteredOptions.map(option => (
             <button
               key={option}
-              onClick={() => setActive(option)}
+              onClick={() => onChange(option)}
               className={`${
                 active === option
                   ? "text-[var(--color-primary)] font-semibold border-b-2 border-[var(--color-primary)]"
