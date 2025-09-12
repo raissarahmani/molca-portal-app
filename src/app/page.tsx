@@ -24,13 +24,13 @@ export default function HomePage() {
          backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/bg.png')`, 
          backgroundSize: 'cover', 
          backgroundRepeat: 'no-repeat',
-         backgroundPosition: 'center'
+         backgroundPosition: 'center',
      }}
      className="relative min-h-screen"
     >
       <SignedOut>
         <div><Header /></div>
-        <div className="absolute inset-0 flex flex-col justify-center items-center px-30">
+        <div className="absolute inset-0 flex flex-col md: gap-2 justify-center items-center lg:px-30 md:px-20">
           <Image
             src="/logo2.png"
             alt="Molca Logo"
@@ -38,9 +38,9 @@ export default function HomePage() {
             height={70}
             className="object-contain"
           />
-          <p className="text-5xl/15 text-center font-semibold title py-5 px-60">Operating System for Industrial Infrastructure</p>
-          <p className="text-sm text-center px-100">Powered by Digital Twin, AR/VR, & Smart Manufacturing Solutions</p>
-          <button type="button" onClick={handleLogin} className="button bg-[var(--color-primary)] text-[var(--color-base)] w-1/2">Login</button>
+          <p className="lg:text-5xl/15 md:text-3xl text-center font-semibold title lg:py-5 lg:px-60 md:px-30">Operating System for Industrial Infrastructure</p>
+          <p className="text-sm text-center lg:px-100 md:px-30">Powered by Digital Twin, AR/VR, & Smart Manufacturing Solutions</p>
+          <button type="button" onClick={handleLogin} className="button bg-[var(--color-primary)] text-[var(--color-base)] w-1/2 md:m-0">Login</button>
         </div>
       </SignedOut>
 
