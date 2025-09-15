@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useAuth } from "@clerk/nextjs"
 import Dropdown from "../dropdown"
 
@@ -40,7 +40,8 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
       project?.slug ?? "",
       project?.link ?? "",
     ])
-    const [cover, setCover] = useState<File | null>(null);
+    const [cover, setCover] = useState("");
+    const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [type, setType] = useState(project?.type ?? options[0]?.value ?? "")
     const [successMsg, setSuccessMsg] = useState("")
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -126,6 +127,9 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
         setSuccessMsg(
           (project?._id ? "Project updated successfully" : "Project uploaded successfully")
         )
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ""; 
+        }
       } catch (err) {
         console.error("Error saving project:", err)
       }
@@ -134,6 +138,7 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
     const resetForm = () => {
       setValues(Array(fields.length).fill(""))
       setType(options[0]?.value ?? "")
+      setCover("")
     }
 
     useEffect(() => {
@@ -211,10 +216,12 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
             id="cover"
             type="file" 
             name="cover"
-            onChange={(e) => {
-              if (e.target.files?.[0]) {
-                setCover(e.target.files[0])
-                console.log("Selected file:", e.target.files[0]);
+            ref={fileInputRef}
+            onChange={() => {
+              const file = fileInputRef.current?.files?.[0]
+              if (file) {
+                setCover(file.name)
+                console.log("Selected file:", file);
               }
             }} 
             className="hidden" 
@@ -224,10 +231,7 @@ export default function Panel({setProject, onProjectUpdated, options, project}: 
             or drag and drop
           </label>
           <p className="text-xs text-[var(--color-grey)]">PNG, JPEG, JPG, etc (max 5mb)</p>
-
-          {cover && (
-            <p className="text-xs text-[var(--color-grey)] my-3">Selected: {cover.name}</p>
-          )}
+          <p className="text-xs text-[var(--color-grey)] my-3">Selected: {cover || "none"}</p>
         </div>
 
         <div className="flex flex-row gap-3 w-full">

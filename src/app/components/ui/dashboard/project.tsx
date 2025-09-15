@@ -1,5 +1,5 @@
 import Image from "next/image"
-import Panel from "@/app/components/dashboard/panel"
+import Panel from "@/app/components/ui/dashboard/panel"
 
 type Project = {
   _id: string;
@@ -22,6 +22,26 @@ type ProjectProps = {
 
 export default function Project({project, options, onProjectUpdated, setShowProject, editProject, setEditProject}: ProjectProps) {
   const matchedOption = options.find(opt => opt.value === project.type)
+
+  function normalizeImage(url: string): string {
+    try {
+      new URL(url)
+      return url
+    } catch {
+      return "/noimage.png"
+    }
+  }
+
+  const handleRedirect = () => {
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
+      window.gtag("event", "project_click", {
+        project_id: project._id,
+        project_title: project.title,
+        project_type: project.type,
+      });
+    }
+    window.open(project.link, "_blank", "noopener,noreferrer");
+  };
   
   return (
     <>
@@ -47,14 +67,15 @@ export default function Project({project, options, onProjectUpdated, setShowProj
               <span className={`${matchedOption?.bg} ${matchedOption?.text} rounded-md px-1`}>{project.type}</span>
             </div>
         </div>
-        <div className="w-full h-50 my-5 bg-[var(--color-grey-light)] flex flex-col items-center justify-center rounded-md">
+        <div className="flex flex-col items-center">
+          <div className="relative w-70 h-50 my-5 bg-[var(--color-grey-light)] rounded-md">
             <Image 
-              src="/noimage.png"
-              alt={project.image_url} 
-              width={50}
-              height={50}
-              className="object-contain"
+              src={normalizeImage(project.image_url)}
+              alt={project.title} 
+              fill
+              className="object-cover rounded-md"
             />
+          </div>
         </div>
         <div className="flex flex-col gap-2 text-[var(--color-base)] text-xs">
             <div className="flex flex-row justify-between">
@@ -81,7 +102,7 @@ export default function Project({project, options, onProjectUpdated, setShowProj
                     height={15}
                     className="object-contain"
                   />
-                  <a className="text-xs truncate">{project.link}</a>
+                  <div onClick={handleRedirect} className="text-xs truncate">{project.link}</div>
                 </div>
             </div>
         </div>

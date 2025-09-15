@@ -3,9 +3,9 @@
 import Image from "next/image"
 import { useState } from "react"
 
-import Project from "@/app/components/dashboard/project"
-import Panel from "@/app/components/dashboard/panel"
-import Modal from "@/app/components/dashboard/modal"
+import Project from "@/app/components/ui/dashboard/project"
+import Panel from "@/app/components/ui/dashboard/panel"
+import Modal from "@/app/components/ui/dashboard/modal"
 import { SignedIn } from "@clerk/nextjs"
 
 type ProjectDetail = {
@@ -31,17 +31,46 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
 
   const matchedOption = options.find(opt => opt.value === project.type)
 
+  function normalizeImage(url: string): string {
+    try {
+      new URL(url)
+      return url
+    } catch {
+      return "/noimage.png"
+    }
+  }
+
+  const handleRedirect = () => {
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
+      window.gtag("event", "project_click", {
+        project_id: project._id,
+        project_title: project.title,
+        project_type: project.type,
+      });
+    }
+    window.open(project.link, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="relative">
       <SignedIn>
       <div  className='flex flex-row items-center text-[var(--color-base)] text-xs hover:bg-[var(--color-grey-light)] py-2 rounded-md'>
-        <div className="flex-1 min-w-30 px-2 truncate">{project.image_url}</div>
+        <div onClick={() => setShowProject(true)} className="flex-1 min-w-30 px-2 truncate cursor-pointer">
+          <div className="relative min-w-30 h-20 rounded-md">
+            <Image
+              src={normalizeImage(project.image_url)}
+              alt={project.title}
+              fill
+              className="object-contain"
+            />
+          </div>
+        </div>
         <div onClick={() => setShowProject(true)} className="flex-1 min-w-50 px-2 truncate hover:font-semibold cursor-pointer">{project.title}</div>
-        <div className="flex-1 min-w-30 px-2">
+        <div onClick={() => setShowProject(true)} className="flex-1 min-w-30 px-2 cursor-pointer">
           <span className={`${matchedOption?.bg} ${matchedOption?.text} rounded-md px-1`}>{project.type}</span>
         </div>
-        <div className="flex-1 min-w-30 px-2 truncate">{project.slug}</div>
-        <div className="flex flex-row flex-1 items-center gap-2 min-w-30 px-2">
+        <div onClick={() => setShowProject(true)} className="flex-1 min-w-30 px-2 truncate cursor-pointer">{project.slug}</div>
+        <div  className="flex flex-row flex-1 items-center gap-2 min-w-30 px-2">
           <Image
             src="/link.png"
             alt="Link"
@@ -49,9 +78,9 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
             height={15}
             className="object-contain"
           />
-          <a href={project.link} className="text-xs truncate">{project.link}</a>
+          <div onClick={handleRedirect} className="text-xs truncate">{project.link}</div>
         </div>
-        <div className="flex-1 min-w-30 px-2">
+        <div className="flex-1 min-w-30 px-2 text-center">
           {new Date(project.last_updated_at).toLocaleString('en-GB', {
             year: 'numeric',
             month: '2-digit',
