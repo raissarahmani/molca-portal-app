@@ -1,3 +1,6 @@
+"use client"
+
+import Script from 'next/script';
 import { type Metadata } from 'next'
 import { Poppins, Roboto } from "next/font/google";
 import {
@@ -34,6 +37,25 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${poppins.variable} ${roboto.variable} antialiased`}>
           {children}
+
+          {process.env.NODE_ENV === "production" && (
+            <>
+              <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+                strategy="afterInteractive"
+              />
+              <Script id="ga-init" strategy="afterInteractive">
+                {`
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                    page_path: window.location.pathname,
+                  });
+                `}
+              </Script>
+            </>
+          )}
         </body>
       </html>
     </ClerkProvider>
