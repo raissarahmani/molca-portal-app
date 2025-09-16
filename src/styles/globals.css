@@ -5,15 +5,29 @@
   --color-primary: rgba(207, 255, 51, 1);
   --color-text: rgba(248, 250, 252, 1);
   --color-grey: rgba(115, 115, 115, 1);
+  --color-grey-light: rgba(224, 224, 225, 1);
+  --color-red: rgba(239, 68, 68, 1);
+  --color-green-light: rgba(162, 233, 193, 1);
+  --color-green: rgba(14, 121, 60, 1);
+  --color-maroon-light: rgba(254, 231, 239, 1);
+  --color-maroon: rgba(146, 11, 58, 1);
+  --color-blue-light: rgba(153, 199, 251, 1);
+  --color-blue: rgba(0, 68, 147, 1);
+  --color-gray-light: rgba(212, 212, 216, 1);
+  --color-gray: rgba(63,63,70, 1);
+  --color-purple-light: rgba(242, 234, 250, 1);
+  --color-purple: rgba(72, 24, 120, 1);
+  --color-yellow-light: rgba(254, 252, 232, 1);
+  --color-yellow: rgba(147, 99, 22, 1);
 }
 
 @layer base {
-  :root {
+  body {
     margin: 0;
     padding: 0;
     background-color: var(--color-base);
     color: var(--color-text);
-    font-family: var(--font-poppins);
+    font-family: var(--font-poppins), sans-serif;
   }
 }
 
