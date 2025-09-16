@@ -109,7 +109,7 @@ export default function Project({project, options, onProjectUpdated, setShowProj
                     height={15}
                     className="object-contain"
                   />
-                  <div onClick={handleRedirect} className="text-xs truncate">{project.link}</div>
+                  <div onClick={handleRedirect} className="text-xs truncate cursor-pointer">{project.link}</div>
                 </div>
             </div>
         </div>

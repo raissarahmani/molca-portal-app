@@ -85,7 +85,7 @@ export default function Projects({project, options, onProjectUpdated}: ProjectPr
             height={15}
             className="object-contain"
           />
-          <div onClick={handleRedirect} className="text-xs truncate">{project.link}</div>
+          <div onClick={handleRedirect} className="text-xs truncate cursor-pointer">{project.link}</div>
         </div>
         <div className="flex-1 min-w-30 px-2 text-center">
           {new Date(project.last_updated_at).toLocaleString('en-GB', {
