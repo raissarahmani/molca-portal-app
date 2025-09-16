@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { SignedIn, UserButton, useUser } from "@clerk/nextjs"
@@ -45,7 +47,7 @@ export default function Header({ active, onChange }: HeaderProps) {
               key={option.value}
               onClick={() => onChange(option.value)}
               className={`${
-                active === option.name
+                active === option.value
                   ? "text-[var(--color-primary)] font-semibold border-b-2 border-[var(--color-primary)]"
                   : "text-[var(--color-text)]"
               } text-sm hover:text-[var(--color-primary)] hover:scale-105 hover:duration-200 hover:cursor-pointer`}
