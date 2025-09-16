@@ -56,7 +56,7 @@ export default function Menu() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: (limit + 1).toString()
+          limit: limit.toString()
         });
 
         if (type) {
@@ -82,9 +82,8 @@ export default function Menu() {
         data = [result.data];
       }
 
-      const nextPage = data.length > limit
-      setProjects(data.slice(0, limit))
-      setTotalPages(nextPage ? page + 1 : page)
+      setProjects(data)
+      setTotalPages(data.length === limit ? page + 1 : page)
     } catch (err) {
       console.error("Error fetching projects:", err);
     }

@@ -1,10 +1,10 @@
 "use client"
 
-import Header from '@/app/components/dashboard/header'
-import Dropdown from '@/app/components/dropdown'
-import Projects from '@/app/components/dashboard/projects'
-import Pagination from '@/app/components/pagination'
-import Panel from '@/app/components/dashboard/panel'
+import Header from '@/app/components/ui/dashboard/header'
+import Dropdown from '@/app/components/ui/dropdown'
+import Projects from '@/app/components/ui/dashboard/projects'
+import Pagination from '@/app/components/ui/pagination'
+import Panel from '@/app/components/ui/dashboard/panel'
 
 import Image from 'next/image'
 import { SignedIn, useAuth, useUser } from '@clerk/nextjs'
@@ -94,7 +94,7 @@ export default function Dashboard() {
       } else {
         const params = new URLSearchParams({
           page: page.toString(),
-          limit: (limit + 1).toString()
+          limit: limit.toString()
         });
 
         if (type) {
@@ -120,9 +120,8 @@ export default function Dashboard() {
         data = [result.data];
       }
 
-      const nextPage = data.length > limit
-      setProjects(data.slice(0, limit))
-      setTotalPages(nextPage ? page + 1 : page)
+      setProjects(data)
+      setTotalPages(data.length === limit ? page + 1 : page)
     } catch (err) {
       console.error("Error fetching projects:", err);
     }
