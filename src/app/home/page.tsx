@@ -1,6 +1,8 @@
-import Header from '@/app/components/header'
-import Card from '@/app/components/home/card'
-import Pagination from '@/app/components/pagination'
+"use client"
+
+import Header from '@/app/components/ui/header'
+import Card from '@/app/components/ui/home/card'
+import Pagination from '@/app/components/ui/pagination'
 import { SignedIn, SignedOut, useAuth } from '@clerk/nextjs'
 
 import Image from 'next/image'
