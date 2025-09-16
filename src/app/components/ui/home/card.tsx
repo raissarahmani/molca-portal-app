@@ -17,6 +17,13 @@ export default function card({ title, link, image, type }: CardProps) {
     }
   }
 
+  function normalizeLink(url: string): string {
+    if (!/^https?:\/\//i.test(url)) {
+      return `https://${url}`;
+    }
+    return url;
+  }
+
   const handleRedirect = () => {
     if (typeof window !== "undefined" && typeof window.gtag === "function") {
       window.gtag("event", "project_click", {
@@ -24,7 +31,8 @@ export default function card({ title, link, image, type }: CardProps) {
         project_type: type,
       });
     }
-    window.open(link, "_blank", "noopener,noreferrer");
+    const finalUrl = normalizeLink(link);
+    window.open(finalUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
