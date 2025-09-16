@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useAuth, SignedOut, SignedIn } from "@clerk/nextjs";
-import Header from "./components/header";
+import Header from "./components/ui/header";
 import Home from "./home/page";
 
 export default function HomePage() {
   const {isSignedIn} = useAuth();
   const router = useRouter();
+  const [type, setType] = useState('')
 
   const handleLogin = () => {
     if (isSignedIn) {
@@ -29,7 +31,12 @@ export default function HomePage() {
      className="relative min-h-screen"
     >
       <SignedOut>
-        <div><Header /></div>
+        <div>
+          <Header 
+            active={type}
+            onChange={(value) => setType(value)}
+          />
+        </div>
         <div className="absolute inset-0 flex flex-col md: gap-2 justify-center items-center lg:px-30 md:px-20">
           <Image
             src="/logo2.png"

@@ -13,13 +13,20 @@ export default function Header({ active, onChange }: HeaderProps) {
   const role = user?.publicMetadata.role
   console.log(role)
 
-  const options = ["Digital Twin", "VR", "AR", "Smart Manufacture", "Deck", "Tools"]
-  const filteredOptions = options.filter(option => {
+  const options = [
+    {name: "Digital Twin", value: "digital-twin"},
+    {name: "VR", value: "vr"},
+    {name: "AR", value: "ar"},
+    {name: "Smart Manufacturing", value:"smart-manufacture"},
+    {name: "Deck", value: "deck"},
+    {name: "Tools", value: "tool"},
+  ]
+  const filteredOptions = options.map(option => option).filter(option => {
     if (role === "sales") {
-      return ["Deck", "Tools"].includes(option)
+      return ["Deck", "Tools"].includes(option.name);
     }
-    return true
-  })
+    return true;
+  });
 
   return (
     <div className="w-full py-1 px-5 flex flex-row justify-between items-center relative">
@@ -35,15 +42,15 @@ export default function Header({ active, onChange }: HeaderProps) {
         <div className="flex gap-6">
           {filteredOptions.map(option => (
             <button
-              key={option}
-              onClick={() => onChange(option)}
+              key={option.value}
+              onClick={() => onChange(option.value)}
               className={`${
-                active === option
+                active === option.name
                   ? "text-[var(--color-primary)] font-semibold border-b-2 border-[var(--color-primary)]"
                   : "text-[var(--color-text)]"
               } text-sm hover:text-[var(--color-primary)] hover:scale-105 hover:duration-200 hover:cursor-pointer`}
             >
-              {option}
+              {option.name}
             </button>
             ))}
         </div>
