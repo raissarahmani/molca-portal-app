@@ -32,15 +32,22 @@ export default function Project({project, options, onProjectUpdated, setShowProj
     }
   }
 
+  function normalizeLink(url: string): string {
+    if (!/^https?:\/\//i.test(url)) {
+      return `https://${url}`;
+    }
+    return url;
+  }
+
   const handleRedirect = () => {
     if (typeof window !== "undefined" && typeof window.gtag === "function") {
       window.gtag("event", "project_click", {
-        project_id: project._id,
         project_title: project.title,
         project_type: project.type,
       });
     }
-    window.open(project.link, "_blank", "noopener,noreferrer");
+    const finalUrl = normalizeLink(project.link);
+    window.open(finalUrl, "_blank", "noopener,noreferrer");
   };
   
   return (
