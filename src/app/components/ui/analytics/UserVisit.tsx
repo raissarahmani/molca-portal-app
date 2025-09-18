@@ -64,7 +64,7 @@ export default function UserVisit() {
   return (
     <div className="p-5">
       <div className="w-full">
-        <p className="font-semibold text-[var(--color-grey)] text-center">User Visits</p>
+        <p className="font-semibold text-[var(--color-grey)] text-center">Page View</p>
         <div className="bg-[var(--color-grey-light)] w-25 text-[var(--color-base)]">
           <Dropdown 
             options={options}
