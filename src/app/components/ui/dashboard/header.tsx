@@ -1,12 +1,13 @@
-"use client"
-
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 
-export default function Header() {
-  const [active, setActive] = useState('Dashboard')
+type HeaderProps = {
+  active: string
+  setActive: (value: string) => void
+}
+
+export default function Header({ active, setActive }: HeaderProps) {
   const options = ["Home", "Dashboard", "Analytics"]
 
   return (
@@ -21,9 +22,23 @@ export default function Header() {
 
       <SignedIn>
         <div className="flex gap-6">
-          {options.map(option => (
-            <Link
-              href={`/${option.toLowerCase()}`}
+          {options.map(option => {
+            if (option === "Home") {
+              return (
+                <Link
+                  href="/home"
+                  key={option}
+                  className={`${
+                    active === option ? "font-semibold" : "font-normal"
+                  } text-[var(--color-base)] text-sm hover:text-[var(--color-base)] hover:scale-105 hover:duration-200 hover:cursor-pointer`}
+                >
+                  {option}
+                </Link>
+              )
+            }
+
+            return (
+            <div
               key={option}
               onClick={() => setActive(option)}
               className={`${
@@ -33,8 +48,8 @@ export default function Header() {
               } text-[var(--color-base)] text-sm hover:text-[var(--color-base)] hover:scale-105 hover:duration-200 hover:cursor-pointer`}
             >
               {option}
-            </Link>
-            ))}
+            </div>
+          )})}
         </div>
         <div className="px-3"><UserButton /></div>  
       </SignedIn>
