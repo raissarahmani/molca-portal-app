@@ -1,5 +1,6 @@
 "use client"
 
+import Dropdown from "@/app/components/ui/dropdown";
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import {
@@ -19,6 +20,17 @@ interface RankingItem {
 
 export default function UserVisit() {
   const [rankingByType, setRankingByType] = useState<RankingItem[]>([]);
+  const [value, setValue] = useState('')
+  const [order, setOrder] = useState('')
+  const options = [
+    {name: "Daily", value: "daily"},
+    {name: "Weekly", value: "weekly"},
+    {name: "Monthly", value: "monthly"},
+  ]
+  const sortby = [
+    {name: "Highest", value: "desc"},
+    {name: "Lowest", value: "asc"},
+  ]
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const {getToken} = useAuth()
 
@@ -29,7 +41,7 @@ export default function UserVisit() {
         if (!token) throw new Error("No token available");
         console.log(token)
 
-        const res = await fetch(`${apiUrl}/analytics/view-project/title`, {
+        const res = await fetch(`${apiUrl}/analytics/view-project/title?range=${value || "daily"}&order=${order || "desc"}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -51,14 +63,30 @@ export default function UserVisit() {
     };
 
   void fetchData();
-  }, [apiUrl, getToken]);
+  }, [apiUrl, getToken, value, order]);
 
   return (
     <div className="p-5">
       <div className="w-full">
-        <p className="font-semibold text-sm text-[var(--color-grey)] text-center">Project Visit By Title</p>
+        <p className="font-semibold text-[var(--color-grey)] text-center">Project Visit By Title</p>
+        <div className="flex flex-row justify-between">
+          <div className="bg-[var(--color-grey-light)] w-25 text-[var(--color-base)]">
+            <Dropdown 
+              options={options}
+              value={value}
+              onChange={(e) => setValue(e.target.value)} 
+            />
+          </div>
+          <div className="bg-[var(--color-grey-light)] w-25 text-[var(--color-base)]">
+            <Dropdown 
+              options={sortby}
+              value={order}
+              onChange={(e) => setOrder(e.target.value)} 
+            />
+          </div>
+        </div>
         <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={rankingByType}>
+          <BarChart data={rankingByType} margin={{ top: 25, right: 20, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="value" 

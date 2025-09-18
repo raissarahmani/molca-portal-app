@@ -65,7 +65,7 @@ export default function ProjectType() {
   return (
     <div className="p-5">
       <div className="w-full">
-        <p className="font-semibold text-sm text-[var(--color-grey)] text-center">Project Type</p>
+        <p className="font-semibold text-[var(--color-grey)] text-center mb-10">Project Type</p>
         <ResponsiveContainer width="100%" height={200}>
           <PieChart>
             <Pie
@@ -100,7 +100,7 @@ export default function ProjectType() {
               wrapperStyle={{ 
                 fontSize: "12px", 
                 fontWeight: "500", 
-                color: "var(--color-grey)" 
+                color: "var(--color-grey)", 
               }}
             />
           </PieChart>
